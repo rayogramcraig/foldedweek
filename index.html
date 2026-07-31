@@ -824,6 +824,106 @@
       }
     }
 
+  
+    /* Publish completion modal */
+    #publishCompleteModal{
+      z-index:240;
+      background:rgba(0,0,0,.72);
+      backdrop-filter:none;
+      padding:42px;
+    }
+
+    #publishCompleteModal .finish-modal{
+      position:relative;
+      width:min(1180px,94vw);
+      max-height:90vh;
+      overflow:auto;
+      background:#000;
+      color:var(--mock-blue);
+      border:0;
+      border-radius:0;
+      box-shadow:none;
+    }
+
+    #publishCompleteModal .finish-inner{
+      display:grid;
+      grid-template-columns:minmax(300px,.85fr) minmax(420px,1.45fr);
+      gap:56px;
+      align-items:center;
+      padding:64px 72px;
+    }
+
+    #publishCompleteModal .finish-copy{
+      font-family:Helvetica,Arial,sans-serif;
+      color:var(--mock-blue);
+    }
+
+    #publishCompleteModal .finish-done{
+      margin:0 0 48px;
+      font-size:38px;
+      line-height:1;
+      font-weight:700;
+    }
+
+    #publishCompleteModal .finish-heading{
+      margin:0;
+      font-size:36px;
+      line-height:1.15;
+      font-weight:700;
+    }
+
+    #publishCompleteModal .finish-subhead{
+      margin:2px 0 44px;
+      font-size:29px;
+      line-height:1.2;
+      font-weight:200;
+    }
+
+    #publishCompleteModal .finish-video{
+      position:relative;
+      width:100%;
+      aspect-ratio:16/9;
+      background:#111;
+      overflow:hidden;
+    }
+
+    #publishCompleteModal .finish-video iframe,
+    #publishCompleteModal .finish-video video{
+      display:block;
+      width:100%;
+      height:100%;
+      border:0;
+      object-fit:cover;
+    }
+
+    #publishCompleteModal .finish-close{
+      position:absolute;
+      z-index:3;
+      top:14px;
+      right:18px;
+      width:42px;
+      height:42px;
+      padding:0;
+      border:0;
+      background:transparent;
+      color:var(--mock-blue);
+      font-size:34px;
+      line-height:1;
+      font-weight:200;
+    }
+
+    @media(max-width:850px){
+      #publishCompleteModal{padding:18px;}
+      #publishCompleteModal .finish-inner{
+        grid-template-columns:1fr;
+        gap:34px;
+        padding:48px 30px 34px;
+      }
+      #publishCompleteModal .finish-done{margin-bottom:28px;font-size:30px;}
+      #publishCompleteModal .finish-heading{font-size:29px;}
+      #publishCompleteModal .finish-subhead{font-size:23px;margin-bottom:28px;}
+    }
+
   </style>
 </head>
 <body>
@@ -1428,7 +1528,8 @@
       sheets.forEach((s,i)=>{if(i)pdf.addPage('a4','landscape');pdf.addImage(s.toDataURL('image/jpeg',.92),'JPEG',0,0,297,210,undefined,'FAST');});
       const filename=($('#title').value||'folded-week').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.pdf';
       pdf.save(filename);
-      $('#publishStatus').textContent='Done. Print duplex, flip on the short edge, fit to page, then fold, cut and staple.';
+      $('#publishStatus').textContent='';
+      $('#publishCompleteModal').hidden=false;
     }catch(err){console.error(err);$('#publishStatus').textContent='Something went wrong while creating the PDF.';}
     finally{btn.disabled=false;}
   }
@@ -1470,9 +1571,41 @@
   });
   $('#modalSpread').addEventListener('click',()=>{const p=state.photos.find(x=>x.id===state.modalPhotoId);if(!p)return;p.spread=!p.spread;ensureLayout(p,p.spread);openPhotoModal(p.id);});
   $('#modalFill').addEventListener('click',()=>{const p=state.photos.find(x=>x.id===state.modalPhotoId);if(!p)return;const i=state.photos.findIndex(x=>x.id===p.id);const isCover=i===0||(i===state.photos.length-1&&state.photos.length>1);resetLayout(p,p.spread&&!isCover);renderModalEditor();renderPreview();});
+  const finishModal=$('#publishCompleteModal');
+  const closeFinishModal=()=>{ finishModal.hidden=true; };
+  $('#finishModalClose').addEventListener('click',closeFinishModal);
+  finishModal.addEventListener('click',e=>{ if(e.target===finishModal) closeFinishModal(); });
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape' && !finishModal.hidden) closeFinishModal();
+  });
+
 })();
 </script>
 
+
+
+<div id="publishCompleteModal" class="modal-backdrop" hidden>
+  <div class="finish-modal" role="dialog" aria-modal="true" aria-labelledby="finishModalTitle">
+    <button id="finishModalClose" class="finish-close" type="button" aria-label="Close">×</button>
+    <div class="finish-inner">
+      <div class="finish-copy">
+        <h2 id="finishModalTitle" class="finish-done">Done.</h2>
+        <p class="finish-heading">Print 2-sided</p>
+        <p class="finish-subhead">borderless, fit to page</p>
+        <p class="finish-heading">Cut, Fold, Staple.</p>
+      </div>
+      <div class="finish-video">
+        <!-- Replace the src below with the URL of your hosted instructional video. -->
+        <iframe
+          id="foldedWeekTutorial"
+          src="about:blank"
+          title="How to print, cut, fold, and staple a Folded Week diary"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
