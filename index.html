@@ -655,9 +655,7 @@
       outline-offset:5px;
     }
 
-    .upload-zone strong::after{
-      content:"Drop up to " attr(data-count) " images here";
-    }
+    
     [data-screen="1"] #uploadMessage{
       display:none;
     }
@@ -750,30 +748,80 @@
     }
 
   
+    /* Refined upload countdown and publish caption sentence */
+    .upload-zone strong{
+      font-size:31px;
+      font-weight:700;
+      color:var(--mock-blue);
+    }
+    .upload-zone strong::after{content:none!important;}
+    .upload-zone strong .rest,
+    .upload-zone strong .count{
+      transition:opacity .18s ease, font-size .18s ease;
+    }
+    .upload-zone:not(.uploading) strong .rest,
+    .upload-zone:not(.uploading) strong .count{
+      opacity:1;
+      font-size:1em;
+    }
+    .upload-zone.uploading strong .rest{
+      opacity:.2;
+      font-size:1em;
+    }
+    .upload-zone.uploading strong .count{
+      opacity:1;
+      font-size:1.5em;
+    }
 
-    /* Publish-complete instructional modal */
-    #publishCompleteModal{
-      position:fixed;inset:0;z-index:220;display:grid;place-items:center;
-      padding:32px;background:rgba(52,52,52,.88);
+    /* Caption option sentence styled as inline toggle words */
+    #mergedChecks{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:nowrap;
+      font-weight:100;
+      font-size:clamp(22px,3vw,22px);
+      color:var(--mock-blue);
+      white-space:nowrap;
     }
-    #publishCompleteModal[hidden]{display:none;}
-    .publish-complete-card{
-      width:min(1220px,92vw);background:#000;color:var(--mock-blue);
-      display:grid;grid-template-columns:minmax(300px,.9fr) minmax(420px,1.35fr);
-      gap:48px;align-items:center;padding:64px 72px;
+
+    #mergedChecks input{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
     }
-    .publish-complete-copy{font-family:Helvetica,Arial,sans-serif;}
-    .publish-complete-copy .done{font-size:36px;font-weight:700;margin-bottom:48px;}
-    .publish-complete-copy .strong{font-size:34px;font-weight:700;line-height:1.25;}
-    .publish-complete-copy .light{font-size:28px;font-weight:300;margin-bottom:42px;}
-    .publish-video-wrap{position:relative;aspect-ratio:16/9;background:#111;overflow:hidden;}
-    .publish-video-wrap iframe,.publish-video-wrap video{width:100%;height:100%;border:0;display:block;}
-    .publish-complete-close{position:absolute;right:20px;top:14px;border:0;background:transparent;color:#fff;font-size:34px;line-height:1;}
+
+    #mergedChecks .caption-toggle{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:54px;
+      padding:8px 18px;
+      border:2px solid var(--mock-blue);
+      border-radius:8px;
+      color:var(--mock-blue);
+      background:transparent;
+      font-weight:700;
+      line-height:1;
+      cursor:pointer;
+      transition:background .15s ease, color .15s ease, transform .15s ease;
+    }
+
+    #mergedChecks .caption-toggle.is-checked{
+      background:var(--mock-blue);
+      color:#303030;
+    }
+
+    #mergedChecks .caption-toggle:active{
+      transform:scale(.98);
+    }
+
     @media(max-width:850px){
-      .publish-complete-card{grid-template-columns:1fr;padding:38px 28px;gap:30px;}
-      .publish-complete-copy .done{margin-bottom:26px;}
-      .publish-complete-copy .strong{font-size:28px;}
-      .publish-complete-copy .light{font-size:23px;margin-bottom:26px;}
+      #mergedChecks{
+        flex-wrap:wrap;
+        white-space:normal;
+        gap:10px;
+      }
     }
 
   </style>
@@ -857,24 +905,6 @@
       <button id="modalDone" class="modal-done" type="button">Done</button>
     </div>
     <input id="modalReplaceInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" hidden>
-  </div>
-</div>
-
-
-
-<div id="publishCompleteModal" hidden aria-hidden="true">
-  <button id="publishCompleteClose" class="publish-complete-close" aria-label="Close">×</button>
-  <div class="publish-complete-card" role="dialog" aria-modal="true" aria-label="Printing instructions">
-    <div class="publish-complete-copy">
-      <div class="done">Done.</div>
-      <div class="strong">Print 2-sided</div>
-      <div class="light">borderless, fit to page</div>
-      <div class="strong">Cut, Fold, Staple.</div>
-    </div>
-    <div class="publish-video-wrap">
-      <!-- Replace the src below with your hosted video URL. -->
-      <iframe id="foldedWeekTutorial" src="about:blank" title="How to fold the booklet" allow="autoplay; fullscreen" allowfullscreen></iframe>
-    </div>
   </div>
 </div>
 
@@ -1376,23 +1406,6 @@
     renderPublishCover();
   }
 
-
-
-  function openPublishCompleteModal(){
-    const modal=$('#publishCompleteModal');
-    if(!modal) return;
-    modal.hidden=false;
-    modal.setAttribute('aria-hidden','false');
-    $('#publishCompleteClose')?.focus();
-  }
-
-  function closePublishCompleteModal(){
-    const modal=$('#publishCompleteModal');
-    if(!modal) return;
-    modal.hidden=true;
-    modal.setAttribute('aria-hidden','true');
-  }
-
   async function publish(){
     if(!state.photos.length) return;
     const btn=$('#publishBtn');btn.disabled=true;$('#publishStatus').textContent='Building your one-sheet diary…';
@@ -1415,8 +1428,7 @@
       sheets.forEach((s,i)=>{if(i)pdf.addPage('a4','landscape');pdf.addImage(s.toDataURL('image/jpeg',.92),'JPEG',0,0,297,210,undefined,'FAST');});
       const filename=($('#title').value||'folded-week').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.pdf';
       pdf.save(filename);
-      $('#publishStatus').textContent='';
-      openPublishCompleteModal();
+      $('#publishStatus').textContent='Done. Print duplex, flip on the short edge, fit to page, then fold, cut and staple.';
     }catch(err){console.error(err);$('#publishStatus').textContent='Something went wrong while creating the PDF.';}
     finally{btn.disabled=false;}
   }
@@ -1458,10 +1470,73 @@
   });
   $('#modalSpread').addEventListener('click',()=>{const p=state.photos.find(x=>x.id===state.modalPhotoId);if(!p)return;p.spread=!p.spread;ensureLayout(p,p.spread);openPhotoModal(p.id);});
   $('#modalFill').addEventListener('click',()=>{const p=state.photos.find(x=>x.id===state.modalPhotoId);if(!p)return;const i=state.photos.findIndex(x=>x.id===p.id);const isCover=i===0||(i===state.photos.length-1&&state.photos.length>1);resetLayout(p,p.spread&&!isCover);renderModalEditor();renderPreview();});
-  $('#publishCompleteClose')?.addEventListener('click',closePublishCompleteModal);
-  $('#publishCompleteModal')?.addEventListener('click',e=>{if(e.target===$('#publishCompleteModal'))closePublishCompleteModal();});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape' && !$('#publishCompleteModal')?.hidden)closePublishCompleteModal();});
 })();
 </script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const uploadStrong = document.querySelector('.upload-zone strong');
+  if (uploadStrong) {
+    const initialCount = uploadStrong.getAttribute('data-count') || '10';
+    uploadStrong.innerHTML =
+      '<span class="rest">Drop up to </span>' +
+      '<span class="count">' + initialCount + '</span>' +
+      '<span class="rest"> images here</span>';
+
+    const observer = new MutationObserver(() => {
+      const count = uploadStrong.getAttribute('data-count') || '0';
+      const countEl = uploadStrong.querySelector('.count');
+      if (countEl) countEl.textContent = count;
+    });
+    observer.observe(uploadStrong, {
+      attributes: true,
+      attributeFilter: ['data-count']
+    });
+  }
+
+  const checks = document.querySelectorAll('.publish-options .check');
+  if (checks.length >= 2 && !document.getElementById('mergedChecks')) {
+    const dateInput = checks[0].querySelector('input');
+    const locationInput = checks[1].querySelector('input');
+
+    const merged = document.createElement('div');
+    merged.className = 'check';
+    merged.id = 'mergedChecks';
+
+    const makeToggle = (input, labelText) => {
+      const label = document.createElement('label');
+      label.className = 'caption-toggle';
+      label.textContent = labelText;
+      label.htmlFor = input.id;
+      label.classList.toggle('is-checked', input.checked);
+
+      input.addEventListener('change', () => {
+        label.classList.toggle('is-checked', input.checked);
+      });
+
+      label.addEventListener('click', (event) => {
+        event.preventDefault();
+        input.checked = !input.checked;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+
+      merged.appendChild(input);
+      merged.appendChild(label);
+    };
+
+    merged.append(document.createTextNode('Show '));
+    makeToggle(locationInput, 'location');
+    merged.append(document.createTextNode(' and '));
+    makeToggle(dateInput, 'date');
+    merged.append(document.createTextNode(' in the caption.'));
+
+    checks[0].parentNode.insertBefore(merged, checks[0]);
+    checks[0].remove();
+    checks[1].remove();
+  }
+});
+</script>
+
 </body>
 </html>
