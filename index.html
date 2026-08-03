@@ -1666,11 +1666,10 @@
 })();
 </script>
 
-
-
 <div id="publishCompleteModal" class="modal-backdrop" hidden>
   <div class="finish-modal" role="dialog" aria-modal="true" aria-labelledby="finishModalTitle">
     <button id="finishModalClose" class="finish-close" type="button" aria-label="Close">×</button>
+
     <div class="finish-inner">
       <div class="finish-copy">
         <h2 id="finishModalTitle" class="finish-done">Done.</h2>
@@ -1678,18 +1677,21 @@
         <p class="finish-subhead">borderless, fit to page</p>
         <p class="finish-heading">Cut, Fold, Staple.</p>
       </div>
+
       <div class="finish-video">
-        <!-- Replace the src below with the URL of your hosted instructional video. -->
         <iframe
           id="foldedWeekTutorial"
-          src="about:blank"
+          src="https://www.youtube-nocookie.com/embed/PPiVG1kWbCU?rel=0"
           title="How to print, cut, fold, and staple a Folded Week diary"
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowfullscreen></iframe>
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
       </div>
     </div>
   </div>
 </div>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
