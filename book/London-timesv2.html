@@ -298,7 +298,10 @@
                        window.dataLayer = window.dataLayer || [];
                        function gtag(){dataLayer.push(arguments);}
                        gtag('js', new Date());
-                       gtag('event', 'page_view', { 'send_to': 'G-T7F55GX4YS' });
+					   gtag('event', 'page_view', {
+					       'send_to': 'G-T7F55GX4YS',
+					       'page_location': window.location.origin + window.location.pathname + '?fp_page=' + ev.detail.page
+					   });
                    }
                 }
             });
