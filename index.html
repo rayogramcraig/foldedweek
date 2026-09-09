@@ -351,7 +351,7 @@
     }
     .upload-zone:hover,.upload-zone.drag{background:transparent;border-color:var(--mock-blue);}
     .upload-zone strong{font-size:0;margin:0;color:var(--mock-blue);}
-    .upload-zone strong::after{content:"Drop up to 10 images here";font-size:31px;font-weight:700;}
+    .upload-zone strong::after{content:"Drop up to 12 images here";font-size:31px;font-weight:700;}
     .upload-zone .muted{display:none;}
 
     /* Arrange */
@@ -977,6 +977,29 @@
       .book-preview{padding-top:28px;}
     }
 
+
+    /* Click empty arrange pages to add another image */
+    .empty-page.empty-page-add{
+      z-index:9;
+      cursor:pointer;
+      color:var(--mock-blue);
+      background:#fff;
+      font-weight:700;
+      text-align:center;
+      transition:background .15s ease,color .15s ease;
+    }
+    .empty-page.empty-page-add:hover,
+    .empty-page.empty-page-add:focus-visible{
+      color:#222;
+      background:var(--mock-yellow);
+      outline:none;
+    }
+    .empty-page.empty-page-add.is-disabled{
+      cursor:not-allowed;
+      color:#999;
+      background:#fff;
+    }
+
   </style>
 </head>
 
@@ -1008,7 +1031,7 @@
   <section class="screen panel" data-screen="1">
     <label id="dropZone" class="upload-zone">
       <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple />
-      <strong id="uploadInstruction" data-count="10">+ Add up to 10 images</strong>
+      <strong id="uploadInstruction" data-count="12">+ Add up to 12 images</strong>
       <span class="muted">Drop images here or click to choose them.</span>
     </label>
     <div id="progressShell" class="progress-shell"><div id="progressBar" class="progress-bar"></div></div>
@@ -1081,6 +1104,7 @@
       <button id="modalDone" class="modal-done" type="button">Done</button>
     </div>
     <input id="modalReplaceInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" hidden>
+    <input id="emptyPageInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" hidden>
   </div>
 </div>
 
@@ -1090,6 +1114,7 @@
 <script>
 (() => {
   const PAGE_W = 1000;
+  const MAX_IMAGES = 12;
   const PAPER_SIZES = {
     letter:  { label:'Letter', pdfFormat:'letter', sheetWidth:279.4, sheetHeight:215.9 },
     legal:   { label:'Legal', pdfFormat:'legal', sheetWidth:355.6, sheetHeight:215.9 },
@@ -1097,7 +1122,7 @@
     'a-series': { label:'A Series (A3, A4, etc)', pdfFormat:'a4', sheetWidth:297, sheetHeight:210 }
   };
   let PAGE_H = Math.round(PAGE_W * Math.SQRT2);
-  const state = { photos: [], step:1, includeDate:true, includeLocation:true, selectedId:null, modalPhotoId:null, paperSize:'a-series' };
+  const state = { photos: [], step:1, includeDate:true, includeLocation:true, selectedId:null, modalPhotoId:null, pendingEmptyPageIndex:null, paperSize:'a-series' };
 
   function currentPaper(){ return PAPER_SIZES[state.paperSize] || PAPER_SIZES['a-series']; }
   function applyPaperSize(resetLayouts=false){
@@ -1233,7 +1258,7 @@
   }
 
   async function addFiles(files){
-    const selected=[...files].filter(f=>f.type.startsWith('image/')).slice(0,10);
+    const selected=[...files].filter(f=>f.type.startsWith('image/')).slice(0,MAX_IMAGES);
     if(!selected.length) return;
     state.photos.forEach(p=>URL.revokeObjectURL(p.url));
     state.photos=[]; state.selectedId=null;
@@ -1259,7 +1284,7 @@
     setTimeout(()=>{
       uploadZone.classList.remove('uploading','upload-complete');
       uploadZone.style.setProperty('--upload-progress','0%');
-      instruction.dataset.count='10';
+      instruction.dataset.count=String(MAX_IMAGES);
       showStep(2);
     },300);
   }
@@ -1288,7 +1313,7 @@
   function refreshAll(){
     if(state.step===2) renderArrange();
     if(state.step===3) renderSummary();
-    $('#uploadMessage').textContent=state.photos.length?`${state.photos.length} of 10 images ready.`:'';
+    $('#uploadMessage').textContent=state.photos.length?`${state.photos.length} of ${MAX_IMAGES} images ready.`:'';
   }
 
   function suggestDateRange(){
@@ -1305,6 +1330,26 @@
     const spreadsNeeded=Math.max(0,Math.min(interior.length,14-interior.length));
     const candidates=[...interior].sort((a,b)=>(b.width/b.height)-(a.width/a.height));
     candidates.slice(0,spreadsNeeded).forEach(p=>p.spread=true);
+  }
+
+  async function addPhotoFromEmptyPage(pageIndex,file){
+    if(!file || state.photos.length>=MAX_IMAGES) return;
+    const data=await readPhotoFile(file);
+    const photo={id:uid(),...data,spread:false,pageLayout:null,spreadLayout:null};
+
+    // Empty arrange pages occur after the currently placed interior photos.
+    // Insert before the reserved back-cover photo so the new image joins the interior.
+    if(state.photos.length>1){
+      photo.spread=Number.isInteger(pageIndex) && pageIndex>=1 && pageIndex<14;
+      state.photos.splice(state.photos.length-1,0,photo);
+    }else{
+      state.photos.push(photo);
+    }
+
+    state.selectedId=photo.id;
+    suggestDateRange();
+    refreshAll();
+    openPhotoModal(photo.id);
   }
 
   function renderThumbs(){
@@ -1442,7 +1487,7 @@
       const label=document.createElement('div'); label.className='spread-label'; label.textContent=item.label; holder.appendChild(label);
       if(item.single){
         const frame=document.createElement('div'); frame.className='editor-single';
-        renderEditablePage(frame,pages[item.indexes[0]],false);
+        renderEditablePage(frame,pages[item.indexes[0]],false,item.indexes[0]);
         holder.appendChild(frame);
       } else {
         const frame=document.createElement('div'); frame.className='editor-spread';
@@ -1452,7 +1497,7 @@
         }else{
           const halfL=document.createElement('div');halfL.style.cssText='position:absolute;left:0;top:0;width:50%;height:100%;overflow:hidden';
           const halfR=document.createElement('div');halfR.style.cssText='position:absolute;right:0;top:0;width:50%;height:100%;overflow:hidden';
-          renderEditablePage(halfL,left,false);renderEditablePage(halfR,right,false);
+          renderEditablePage(halfL,left,false,item.indexes[0]);renderEditablePage(halfR,right,false,item.indexes[1]);
           frame.append(halfL,halfR);
         }
         holder.appendChild(frame);
@@ -1473,14 +1518,30 @@
     }
   }
 
-  function renderEditablePage(frame,pageObj,isSpread){
+  function renderEditablePage(frame,pageObj,isSpread,pageIndex=null){
     // Arrange mode shows only the photographs; publication text is added at Publish.
     if(pageObj.type==='cover'||pageObj.type==='backCover'||pageObj.type==='photo'){
       addEditableImage(frame,pageObj.photo,false);
     }else if(pageObj.type==='back'){
       frame.style.background='#111';
     }else{
-      const e=document.createElement('div');e.className='empty-page';e.textContent='Empty page';frame.appendChild(e);
+      const e=document.createElement('div');
+      const atLimit=state.photos.length>=MAX_IMAGES;
+      e.className='empty-page empty-page-add'+(atLimit?' is-disabled':'');
+      e.textContent=atLimit?`${MAX_IMAGES} image limit`:'+ Add image';
+      e.setAttribute('role','button');
+      e.setAttribute('tabindex',atLimit?'-1':'0');
+      if(pageIndex!==null) e.dataset.pageIndex=String(pageIndex);
+      const choose=()=>{
+        if(atLimit) return;
+        state.pendingEmptyPageIndex=pageIndex;
+        $('#emptyPageInput').click();
+      };
+      e.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();choose();});
+      e.addEventListener('keydown',ev=>{
+        if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();ev.stopPropagation();choose();}
+      });
+      frame.appendChild(e);
     }
   }
 
@@ -1663,6 +1724,7 @@
   $('#photoModal').addEventListener('click',e=>{if(e.target===$('#photoModal'))closePhotoModal();});
   $('#modalReplace').addEventListener('click',()=>$('#modalReplaceInput').click());
   $('#modalReplaceInput').addEventListener('change',async e=>{const f=e.target.files?.[0];if(f&&state.modalPhotoId){const id=state.modalPhotoId;await replacePhoto(id,f);openPhotoModal(id);}e.target.value='';});
+  $('#emptyPageInput').addEventListener('change',async e=>{const f=e.target.files?.[0];const pageIndex=state.pendingEmptyPageIndex;state.pendingEmptyPageIndex=null;if(f)await addPhotoFromEmptyPage(pageIndex,f);e.target.value='';});
   $('#modalDelete').addEventListener('click',()=>{if(state.modalPhotoId){deletePhoto(state.modalPhotoId);closePhotoModal();}});
   $('#modalFront').addEventListener('click',()=>{
     const index=state.photos.findIndex(x=>x.id===state.modalPhotoId);
@@ -1717,7 +1779,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const uploadStrong = document.querySelector('.upload-zone strong');
   if (uploadStrong) {
-    const initialCount = uploadStrong.getAttribute('data-count') || '10';
+    const initialCount = uploadStrong.getAttribute('data-count') || '12';
     uploadStrong.innerHTML =
       '<span class="rest">Drop up to </span>' +
       '<span class="count">' + initialCount + '</span>' +
