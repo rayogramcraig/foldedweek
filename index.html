@@ -669,6 +669,26 @@
       display:none;
     }
 
+    /* Upload privacy reassurance */
+    [data-screen="1"]{
+      position:relative;
+      min-height:760px;
+    }
+    .upload-privacy-note{
+      position:absolute;
+      left:0;
+      bottom:0;
+      margin:0;
+      color:#b8d4df;
+      font-size:14px;
+      line-height:1.4;
+      font-weight:400;
+    }
+    @media(max-width:700px){
+      [data-screen="1"]{min-height:620px;}
+      .upload-privacy-note{position:static;margin-top:44px;}
+    }
+
     /* Photo detail modal at approximately 65% of its previous UI scale */
 	.modal {
 	    width: min(667px, calc(80vw - 36px));
@@ -1036,6 +1056,7 @@
     </label>
     <div id="progressShell" class="progress-shell"><div id="progressBar" class="progress-bar"></div></div>
     <div id="uploadMessage" class="status"></div>
+    <p class="upload-privacy-note">This site does not save, upload, or use your images. Everything stays on your device.</p>
   </section>
 
   <section class="screen panel" data-screen="2" hidden>
@@ -1688,19 +1709,6 @@
       });
       const filename=($('#title').value||'folded-week').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.pdf';
       pdf.save(filename);
-
-      // Track completed PDF creation in GA4. Keep this after pdf.save() so clicks
-      // that fail during PDF creation are not counted as completed PDFs.
-      if (typeof gtag === 'function') {
-        gtag('event', 'pdf_generated', {
-          image_count: state.photos.length,
-          paper_size: state.paperSize,
-          captions_enabled: state.includeDate || state.includeLocation,
-          include_date: state.includeDate,
-          include_location: state.includeLocation
-        });
-      }
-
       $('#publishStatus').textContent='';
       $('#publishCompleteModal').hidden=false;
     }catch(err){console.error(err);$('#publishStatus').textContent='Something went wrong while creating the PDF.';}
