@@ -1688,6 +1688,19 @@
       });
       const filename=($('#title').value||'folded-week').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.pdf';
       pdf.save(filename);
+
+      // Track completed PDF creation in GA4. Keep this after pdf.save() so clicks
+      // that fail during PDF creation are not counted as completed PDFs.
+      if (typeof gtag === 'function') {
+        gtag('event', 'pdf_generated', {
+          image_count: state.photos.length,
+          paper_size: state.paperSize,
+          captions_enabled: state.includeDate || state.includeLocation,
+          include_date: state.includeDate,
+          include_location: state.includeLocation
+        });
+      }
+
       $('#publishStatus').textContent='';
       $('#publishCompleteModal').hidden=false;
     }catch(err){console.error(err);$('#publishStatus').textContent='Something went wrong while creating the PDF.';}
