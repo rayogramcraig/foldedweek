@@ -5,11 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
+
+
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
+
+
 
 
   <title>Folded Week — one-sheet photo diary</title>
@@ -107,6 +111,9 @@
     .arrange-note { max-width:760px; margin:0 0 18px; }
     .editor-row::before { content:'↕'; position:absolute; left:-30px; top:50%; transform:translateY(-50%); color:#777; font-size:20px; }
     .editor-row.fixed::before { content:''; }
+
+
+
 
 
 
@@ -260,6 +267,7 @@
     .icon-button { display:none; }
     .check { color:var(--ink); }
 
+
     .publish-layout {
       display:grid;
       grid-template-columns:minmax(0,1fr) minmax(280px,430px);
@@ -282,6 +290,7 @@
     .publish-back { margin-top:26px; }
     .publish-status { margin-top:12px; }
 
+
     .modal {
       height:80vh;
       max-height:80vh;
@@ -299,6 +308,7 @@
       border-bottom:1px solid #303030;
     }
 
+
     @media (max-width:850px){
       .arrange-layout{grid-template-columns:1fr}
       .preview-wrap{position:static}
@@ -308,6 +318,8 @@
       header{align-items:start;flex-direction:column}
       .steps{flex-wrap:wrap}
     }
+
+
 
 
     /* UI refresh to match supplied mockups — functionality unchanged */
@@ -334,6 +346,7 @@
     .step-pill.active::first-letter{color:#fff;}
     .panel{padding:0;}
 
+
     /* Upload */
     [data-screen="1"]{padding-top:36px;}
     .upload-zone{
@@ -353,6 +366,7 @@
     .upload-zone strong{font-size:0;margin:0;color:var(--mock-blue);}
     .upload-zone strong::after{content:"Drop up to 12 images here";font-size:31px;font-weight:700;}
     .upload-zone .muted{display:none;}
+
 
     /* Arrange */
     [data-screen="2"] h2{display:none;}
@@ -397,6 +411,7 @@
     [data-screen="2"] .primary{font-size:0;}
     [data-screen="2"] .primary::after{content:"Preview";font-size:22px;}
 
+
     /* Publish */
     [data-screen="3"] h2{display:none;}
     .publish-layout{grid-template-columns:minmax(0,1fr) 430px;gap:86px;align-items:start;}
@@ -429,6 +444,7 @@
     /* Empty publish state styling */
     [data-screen="3"].empty-publish .publish-options{opacity:.45;}
 
+
     @media (max-width:900px){
       .app{padding:30px 24px 50px;}
       header{margin-bottom:50px;}
@@ -439,6 +455,8 @@
       .book-preview{padding:28px 24px;gap:34px 30px;}
       h1::before{font-size:36px;}
     }
+
+
 
 
     /* Logo asset and front-cover row spacing */
@@ -468,6 +486,7 @@
       left:116px;
     }
 
+
     /* Center-spread highlight and full-area upload progress */
     .book-preview > .editor-row:nth-child(5) .editor-spread{
       border-color:#fff;
@@ -492,6 +511,8 @@
     .upload-zone.uploading::before{opacity:1;}
     .upload-zone.upload-complete::before{opacity:0;}
     #progressShell{display:none!important;}
+
+
 
 
     /* Photo detail modal — mockup UI */
@@ -639,6 +660,7 @@
 	    vertical-align: middle;
 	    margin-bottom: 7px;
 
+
     }
     #modalFill .modal-control-icon{font-size:35px;font-weight:200;}
     #modalDone,.modal-divider{display:none!important;}
@@ -653,6 +675,7 @@
       .spread-toggle-label{font-size:21px;}
     }
 
+
   
     /* Requested refinements: compact modal, clickable steps, upload countdown */
     .step-pill{
@@ -664,10 +687,12 @@
       outline-offset:5px;
     }
 
+
     
     [data-screen="1"] #uploadMessage{
       display:none;
     }
+
 
     /* Upload privacy reassurance */
     [data-screen="1"]{
@@ -688,6 +713,7 @@
       [data-screen="1"]{min-height:620px;}
       .upload-privacy-note{position:static;margin-top:44px;}
     }
+
 
     /* Photo detail modal at approximately 65% of its previous UI scale */
 	.modal {
@@ -764,6 +790,7 @@
       font-size:23px;
     }
 
+
     @media(max-width:600px){
       .modal{
         padding:24px 18px 28px;
@@ -775,6 +802,7 @@
         grid-template-columns:1fr;
       }
     }
+
 
   
     /* Refined upload countdown and publish caption sentence */
@@ -803,6 +831,7 @@
       font-weight:200;
     }
 
+
     /* Caption option sentence styled as inline toggle words */
     #mergedChecks{
       display:flex;
@@ -815,11 +844,13 @@
       white-space:nowrap;
     }
 
+
     #mergedChecks input{
       position:absolute;
       opacity:0;
       pointer-events:none;
     }
+
 
     #mergedChecks .caption-toggle{
       display:inline-flex;
@@ -837,14 +868,17 @@
       transition:background .15s ease, color .15s ease, transform .15s ease;
     }
 
+
     #mergedChecks .caption-toggle.is-checked{
       background:var(--mock-blue);
       color:#303030;
     }
 
+
     #mergedChecks .caption-toggle:active{
       transform:scale(.98);
     }
+
 
     @media(max-width:850px){
       #mergedChecks{
@@ -854,6 +888,7 @@
       }
     }
 
+
   
     /* Publish completion modal */
     #publishCompleteModal{
@@ -862,6 +897,7 @@
       backdrop-filter:none;
       padding:42px;
     }
+
 
     #publishCompleteModal .finish-modal{
       position:relative;
@@ -875,6 +911,7 @@
       box-shadow:none;
     }
 
+
     #publishCompleteModal .finish-inner{
       display:grid;
       grid-template-columns:minmax(300px,.85fr) minmax(420px,1.45fr);
@@ -883,10 +920,12 @@
       padding:64px 72px;
     }
 
+
     #publishCompleteModal .finish-copy{
       font-family:Helvetica,Arial,sans-serif;
       color:var(--mock-blue);
     }
+
 
     #publishCompleteModal .finish-done{
       margin:0 0 48px;
@@ -895,6 +934,7 @@
       font-weight:700;
     }
 
+
     #publishCompleteModal .finish-heading{
       margin:0;
       font-size:36px;
@@ -902,12 +942,14 @@
       font-weight:700;
     }
 
+
     #publishCompleteModal .finish-subhead{
       margin:2px 0 44px;
       font-size:29px;
       line-height:1.2;
       font-weight:200;
     }
+
 
     #publishCompleteModal .finish-video{
       position:relative;
@@ -917,6 +959,7 @@
       overflow:hidden;
     }
 
+
     #publishCompleteModal .finish-video iframe,
     #publishCompleteModal .finish-video video{
       display:block;
@@ -925,6 +968,7 @@
       border:0;
       object-fit:cover;
     }
+
 
     #publishCompleteModal .finish-close{
       position:absolute;
@@ -942,6 +986,7 @@
       font-weight:200;
     }
 
+
     @media(max-width:850px){
       #publishCompleteModal{padding:18px;}
       #publishCompleteModal .finish-inner{
@@ -953,6 +998,8 @@
       #publishCompleteModal .finish-heading{font-size:29px;}
       #publishCompleteModal .finish-subhead{font-size:23px;margin-bottom:28px;}
     }
+
+
 
 
     /* Paper-size selector and variable page proportions */
@@ -998,6 +1045,8 @@
     }
 
 
+
+
     /* Click empty arrange pages to add another image */
     .empty-page.empty-page-add{
       z-index:9;
@@ -1020,8 +1069,10 @@
       background:#fff;
     }
 
+
   </style>
 </head>
+
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T7F55GX4YS"></script>
@@ -1029,6 +1080,7 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
+
 
   gtag('config', 'G-T7F55GX4YS');
 </script>
@@ -1048,6 +1100,7 @@
     </div>
   </header>
 
+
   <section class="screen panel" data-screen="1">
     <label id="dropZone" class="upload-zone">
       <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple />
@@ -1058,6 +1111,7 @@
     <div id="uploadMessage" class="status"></div>
     <p class="upload-privacy-note">by <a href="http://rayogram.com" style="color:orange;">rayogram</a>. This site does not save, upload, or use your images. Everything stays on your device.</p>
   </section>
+
 
   <section class="screen panel" data-screen="2" hidden>
     <h2 style="margin-top:0">Arrange</h2>
@@ -1079,6 +1133,7 @@
       <button class="primary" data-next="3">Print options →</button>
     </div>
   </section>
+
 
   <section class="screen panel" data-screen="3" hidden>
     <h2 style="margin-top:0">Print</h2>
@@ -1106,6 +1161,7 @@
   </section>
 </div>
 
+
 <div id="photoModal" class="modal-backdrop" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="photoModalTitle">
     <div class="modal-head"><h3 id="photoModalTitle">Drag the photo to reposition it. Drag a corner to resize.</h3><button id="closeModal" class="icon-button" aria-label="Close">×</button></div>
@@ -1129,6 +1185,7 @@
   </div>
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -1144,6 +1201,7 @@
   };
   let PAGE_H = Math.round(PAGE_W * Math.SQRT2);
   const state = { photos: [], step:1, includeDate:true, includeLocation:true, selectedId:null, modalPhotoId:null, pendingEmptyPageIndex:null, paperSize:'a-series' };
+
 
   function currentPaper(){ return PAPER_SIZES[state.paperSize] || PAPER_SIZES['a-series']; }
   function applyPaperSize(resetLayouts=false){
@@ -1161,6 +1219,7 @@
   const $$ = s => [...document.querySelectorAll(s)];
   const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
 
+
   function showStep(n){
     state.step=n;
     $$('.screen').forEach(el => el.hidden = Number(el.dataset.screen)!==n);
@@ -1170,10 +1229,12 @@
     window.scrollTo({top:0,behavior:'smooth'});
   }
 
+
   function localDateInputValue(date){
     const y=date.getFullYear(), m=String(date.getMonth()+1).padStart(2,'0'), d=String(date.getDate()).padStart(2,'0');
     return `${y}-${m}-${d}`;
   }
+
 
   function formatRange(startStr,endStr){
     if(!startStr && !endStr) return '';
@@ -1185,6 +1246,7 @@
     if(s.getFullYear()===e.getFullYear()) return `${s.toLocaleDateString('en-US',{month:'long',day:'numeric'})} - ${e.toLocaleDateString('en-US',{month:'long',day:'numeric'})}, ${e.getFullYear()}`;
     return `${fmt(s)} - ${fmt(e)}`;
   }
+
 
   const US_STATE_CODES={
     'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA','Colorado':'CO',
@@ -1199,6 +1261,7 @@
     'West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY','District of Columbia':'DC'
   };
 
+
   function friendlyPlaceName(value=''){
     return String(value)
       .replace(/^(the\s+)?(city|town|village|borough|municipality)\s+of\s+/i,'')
@@ -1206,6 +1269,7 @@
       .replace(/\s+/g,' ')
       .trim();
   }
+
 
   function usefulNamedFeature(j){
     const name=friendlyPlaceName(j?.name||'');
@@ -1220,6 +1284,7 @@
     return allowedTypes.has(type)||allowedCategories.has(category) ? name : '';
   }
 
+
   function smartLocationLabel(j){
     const a=j?.address||{};
     const countryCode=String(a.country_code||'').toUpperCase();
@@ -1230,9 +1295,11 @@
     let stateCode=String(a.state_code||'').replace(/^US-/i,'').toUpperCase();
     if(!/^[A-Z]{2}$/.test(stateCode)) stateCode=US_STATE_CODES[a.state]||'';
 
+
     // Named outdoor places and landmarks are paired with their city when available.
     const feature=usefulNamedFeature(j);
     if(feature) return [feature,city && city!==feature ? city : ''].filter(Boolean).join(', ');
+
 
     // In cities, use the neighborhood plus the city for a friendly but clear caption.
     const neighborhood=friendlyPlaceName(
@@ -1242,15 +1309,18 @@
       return [neighborhood,city && city!==neighborhood ? city : ''].filter(Boolean).join(', ');
     }
 
+
     // Outside dense cities, use the municipality. Add a state abbreviation in the US.
     if(city){
       return isUS ? [city,stateCode].filter(Boolean).join(', ') : city;
     }
 
+
     // Last friendly fallback: a named region, but never raw GPS coordinates.
     const region=friendlyPlaceName(a.state_district||a.county||a.state||a.country||'');
     return region;
   }
+
 
   async function reverseGeocode(lat,lon){
     try{
@@ -1263,6 +1333,7 @@
       return '';
     }
   }
+
 
   async function readPhotoFile(file){
     const url=URL.createObjectURL(file);
@@ -1277,6 +1348,7 @@
     if(lat!==null&&lon!==null) location=await reverseGeocode(lat,lon);
     return {file,url,img,width:img.naturalWidth,height:img.naturalHeight,date:date?new Date(date):null,lat,lon,location};
   }
+
 
   async function addFiles(files){
     const selected=[...files].filter(f=>f.type.startsWith('image/')).slice(0,MAX_IMAGES);
@@ -1310,6 +1382,7 @@
     },300);
   }
 
+
   async function replacePhoto(id,file){
     const p=state.photos.find(x=>x.id===id);
     if(!p||!file) return;
@@ -1321,6 +1394,7 @@
     refreshAll();
   }
 
+
   function deletePhoto(id){
     const index=state.photos.findIndex(x=>x.id===id);
     if(index<0) return;
@@ -1331,11 +1405,13 @@
     refreshAll();
   }
 
+
   function refreshAll(){
     if(state.step===2) renderArrange();
     if(state.step===3) renderSummary();
     $('#uploadMessage').textContent=state.photos.length?`${state.photos.length} of ${MAX_IMAGES} images ready.`:'';
   }
+
 
   function suggestDateRange(){
     const dates=state.photos.map(p=>p.date).filter(d=>d instanceof Date&&!isNaN(d));
@@ -1345,6 +1421,7 @@
     if(!$('#endDate').value) $('#endDate').value=localDateInputValue(dates[dates.length-1]);
   }
 
+
   function autoArrange(){
     state.photos.forEach(p=>p.spread=false);
     const interior=state.photos.slice(1,-1);
@@ -1353,10 +1430,12 @@
     candidates.slice(0,spreadsNeeded).forEach(p=>p.spread=true);
   }
 
+
   async function addPhotoFromEmptyPage(pageIndex,file){
     if(!file || state.photos.length>=MAX_IMAGES) return;
     const data=await readPhotoFile(file);
     const photo={id:uid(),...data,spread:false,pageLayout:null,spreadLayout:null};
+
 
     // Empty arrange pages occur after the currently placed interior photos.
     // Insert before the reserved back-cover photo so the new image joins the interior.
@@ -1367,16 +1446,19 @@
       state.photos.push(photo);
     }
 
+
     state.selectedId=photo.id;
     suggestDateRange();
     refreshAll();
     openPhotoModal(photo.id);
   }
 
+
   function renderThumbs(){
     $('#thumbs').innerHTML=state.photos.map((p,i)=>`<div class="thumb" data-id="${p.id}"><img src="${p.url}"><div class="thumb-meta"><strong>${i===0?'Front cover':(i===state.photos.length-1&&state.photos.length>1?'Back cover':`Photo ${i+1}`)}</strong><br><span class="muted">${p.date?formatPhotoDate(p.date):'No photo date'}${p.location?` · ${escapeHtml(p.location)}`:''}</span><div class="photo-actions"><button class="mini-button replacePhoto">Replace</button><button class="mini-button danger deletePhoto">Delete</button><input class="replaceInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" hidden></div></div></div>`).join('');
     $('#thumbs').querySelectorAll('.thumb').forEach(card=>wirePhotoActions(card));
   }
+
 
   function wirePhotoActions(card){
     const id=card.dataset.id;
@@ -1386,12 +1468,15 @@
     card.querySelector('.deletePhoto')?.addEventListener('click',()=>deletePhoto(id));
   }
 
+
   function formatPhotoDate(d){ return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}); }
   function escapeHtml(s=''){ return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+
 
   function renderArrange(){
     renderPreview();
   }
+
 
   function frameAspect(isSpread){ return (isSpread?PAGE_W*2:PAGE_W)/PAGE_H; }
   function resetLayout(photo,isSpread){
@@ -1407,9 +1492,11 @@
     return photo[key] || resetLayout(photo,isSpread);
   }
 
+
   function buildPagePlan(){
     const pages=Array.from({length:16},()=>({type:'blank'}));
     if(state.photos[0]) pages[0]={type:'cover',photo:state.photos[0]};
+
 
     const hasSeparateBackCover=state.photos.length>1;
     const interiorPhotos=hasSeparateBackCover ? state.photos.slice(1,-1) : [];
@@ -1426,10 +1513,12 @@
       }
     }
 
+
     if(hasSeparateBackCover) pages[15]={type:'backCover',photo:state.photos[state.photos.length-1]};
     else pages[15]={type:'back'};
     return pages;
   }
+
 
   function drawImageLayout(ctx,photo,isSpread,pagePart=null){
     const frameW=isSpread?PAGE_W*2:PAGE_W;
@@ -1444,12 +1533,14 @@
     ctx.restore();
   }
 
+
   function captionText(photo){
     const parts=[];
     if(state.includeDate&&photo.date) parts.push(formatPhotoDate(photo.date));
     if(state.includeLocation&&photo.location) parts.push(photo.location);
     return parts.join(' · ');
   }
+
 
   function renderPageCanvas(pageObj,index,scale=.28){
     const c=document.createElement('canvas'); c.width=PAGE_W; c.height=PAGE_H; const ctx=c.getContext('2d');
@@ -1477,6 +1568,7 @@
     return c;
   }
 
+
   function drawCaption(ctx,text){
     if(!text) return;
     ctx.save();ctx.textBaseline='bottom';ctx.font='24px "Franklin Gothic Medium", "Helvetica", Arial, sans-serif';
@@ -1485,6 +1577,7 @@
   }
   function wrapText(ctx,text,x,y,maxW,lineH){ const words=text.split(/\s+/);let line='',yy=y;for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,yy);line=word;yy+=lineH;}else line=test;}if(line)ctx.fillText(line,x,yy);}
   function wrapTextBottom(ctx,text,x,y,maxW,lineH){ const words=text.split(/\s+/), lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxW&&line){lines.push(line);line=word;}else line=test;}if(line)lines.push(line);lines.slice(-2).forEach((l,i)=>ctx.fillText(l,x,y-(lines.slice(-2).length-1-i)*lineH));}
+
 
   function renderPreview(){
     state.includeDate=$('#includeDate')?.checked ?? state.includeDate;
@@ -1539,6 +1632,7 @@
     }
   }
 
+
   function renderEditablePage(frame,pageObj,isSpread,pageIndex=null){
     // Arrange mode shows only the photographs; publication text is added at Publish.
     if(pageObj.type==='cover'||pageObj.type==='backCover'||pageObj.type==='photo'){
@@ -1566,12 +1660,14 @@
     }
   }
 
+
   function addCaptionOverlay(frame,photo,isSpread){
     const text=captionText(photo);if(!text)return;
     const cap=document.createElement('div');cap.className='page-text photo-caption';cap.textContent=text;
     if(isSpread) cap.style.maxWidth='44%';
     frame.appendChild(cap);
   }
+
 
   function addEditableImage(frame,photo,isSpread){
     // Arrange is only for ordering pages. Image cropping happens in the detail modal.
@@ -1592,6 +1688,7 @@
       });
     }
   }
+
 
   function renderModalEditor(){
     const photo=state.photos.find(x=>x.id===state.modalPhotoId); if(!photo)return;
@@ -1614,6 +1711,7 @@
     });
   }
 
+
   function startModalMove(e,frame,box,photo,isSpread){
     e.preventDefault();e.stopPropagation();box.setPointerCapture(e.pointerId);
     const r=frame.getBoundingClientRect(), l=ensureLayout(photo,isSpread), sx=e.clientX, sy=e.clientY, ox=l.x, oy=l.y;
@@ -1621,6 +1719,7 @@
     const up=()=>{box.removeEventListener('pointermove',move);box.removeEventListener('pointerup',up);box.removeEventListener('pointercancel',up);renderPreview();};
     box.addEventListener('pointermove',move);box.addEventListener('pointerup',up);box.addEventListener('pointercancel',up);
   }
+
 
   function startModalResize(e,frame,box,photo,isSpread,corner){
     e.preventDefault();e.stopPropagation();box.setPointerCapture(e.pointerId);
@@ -1641,6 +1740,7 @@
     box.addEventListener('pointermove',move);box.addEventListener('pointerup',up);box.addEventListener('pointercancel',up);
   }
 
+
   function openPhotoModal(id){
     const p=state.photos.find(x=>x.id===id); if(!p)return;
     state.modalPhotoId=id; state.selectedId=id;
@@ -1660,6 +1760,7 @@
   }
   function closePhotoModal(){ $('#photoModal').hidden=true; state.modalPhotoId=null; renderPreview(); }
 
+
   function renderPublishCover(){
     const host=$('#publishCoverPreview');
     if(!host) return;
@@ -1677,11 +1778,13 @@
     host.appendChild(canvas);
   }
 
+
   function renderSummary(){
     state.includeDate=$('#includeDate').checked; state.includeLocation=$('#includeLocation').checked;
     $('#publishSummary').innerHTML=`<strong>${escapeHtml($('#title').value||'Untitled')}</strong><br>${escapeHtml(formatRange($('#startDate').value,$('#endDate').value)||'No date range')}<br>${state.photos.length} photo${state.photos.length===1?'':'s'} · 16 pages · one ${currentPaper().label} sheet`;
     renderPublishCover();
   }
+
 
   async function publish(){
     if(!state.photos.length) return;
@@ -1709,11 +1812,23 @@
       });
       const filename=($('#title').value||'folded-week').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.pdf';
       pdf.save(filename);
+
+      // GA4: count completed PDF generations
+      if (typeof gtag === 'function') {
+        gtag('event', 'pdf_generated', {
+          image_count: state.photos.length,
+          paper_size: state.paperSize,
+          captions_enabled: state.includeDate || state.includeLocation,
+          include_date: state.includeDate,
+          include_location: state.includeLocation
+        });
+      }
       $('#publishStatus').textContent='';
       $('#publishCompleteModal').hidden=false;
     }catch(err){console.error(err);$('#publishStatus').textContent='Something went wrong while creating the PDF.';}
     finally{btn.disabled=false;}
   }
+
 
   $('#fileInput').addEventListener('change',e=>addFiles(e.target.files));
   const dz=$('#dropZone');['dragenter','dragover'].forEach(t=>dz.addEventListener(t,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(t=>dz.addEventListener(t,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
@@ -1767,11 +1882,13 @@
     if(e.key==='Escape' && !finishModal.hidden) closeFinishModal();
   });
 
+
 })();
 </script>
 <div id="publishCompleteModal" class="modal-backdrop" hidden>
   <div class="finish-modal" role="dialog" aria-modal="true" aria-labelledby="finishModalTitle">
     <button id="finishModalClose" class="finish-close" type="button" aria-label="Close">×</button>
+
 
     <div class="finish-inner">
       <div class="finish-copy">
@@ -1781,6 +1898,7 @@
         <p class="finish-heading">Cut, Fold, Staple.</p>
         <p class="finish-heading" style="font-size:.8em">(better video to come)</p>
       </div>
+
 
       <div class="finish-video">
         <iframe
@@ -1796,6 +1914,7 @@
   </div>
 </div>
 
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const uploadStrong = document.querySelector('.upload-zone strong');
@@ -1805,6 +1924,7 @@ document.addEventListener('DOMContentLoaded', () => {
       '<span class="rest">Drop up to </span>' +
       '<span class="count">' + initialCount + '</span>' +
       '<span class="rest"> images here</span>';
+
 
     const observer = new MutationObserver(() => {
       const count = uploadStrong.getAttribute('data-count') || '0';
@@ -1817,14 +1937,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+
   const checks = document.querySelectorAll('.publish-options .check');
   if (checks.length >= 2 && !document.getElementById('mergedChecks')) {
     const dateInput = checks[0].querySelector('input');
     const locationInput = checks[1].querySelector('input');
 
+
     const merged = document.createElement('div');
     merged.className = 'check';
     merged.id = 'mergedChecks';
+
 
     const makeToggle = (input, labelText) => {
       const label = document.createElement('label');
@@ -1833,9 +1956,11 @@ document.addEventListener('DOMContentLoaded', () => {
       label.htmlFor = input.id;
       label.classList.toggle('is-checked', input.checked);
 
+
       input.addEventListener('change', () => {
         label.classList.toggle('is-checked', input.checked);
       });
+
 
       label.addEventListener('click', (event) => {
         event.preventDefault();
@@ -1843,9 +1968,11 @@ document.addEventListener('DOMContentLoaded', () => {
         input.dispatchEvent(new Event('change', { bubbles: true }));
       });
 
+
       merged.appendChild(input);
       merged.appendChild(label);
     };
+
 
     merged.append(document.createTextNode('Show '));
     makeToggle(locationInput, 'location');
@@ -1853,12 +1980,14 @@ document.addEventListener('DOMContentLoaded', () => {
     makeToggle(dateInput, 'date');
     merged.append(document.createTextNode(' in the caption.'));
 
+
     checks[0].parentNode.insertBefore(merged, checks[0]);
     checks[0].remove();
     checks[1].remove();
   }
 });
 </script>
+
 
 </body>
 </html>
