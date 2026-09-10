@@ -2292,8 +2292,10 @@
       });
       const filename=($('#title').value||'folded-week').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.pdf';
 
-      // GA4: count completed PDF generations.
-      // Send before starting the browser download and explicitly target this property.
+      // Start the browser download first; only count it after jsPDF returns successfully.
+      pdf.save(filename);
+
+      // GA4: count successfully generated PDF downloads.
       if (typeof gtag === 'function') {
         const pdfEvent = {
           send_to: 'G-T7F55GX4YS',
@@ -2308,8 +2310,6 @@
       } else {
         console.warn('[Folded Week] GA4 gtag is not available');
       }
-
-      pdf.save(filename);
       $('#publishStatus').textContent='';
       $('#publishCompleteModal').hidden=false;
     }catch(err){console.error(err);$('#publishStatus').textContent='Something went wrong while creating the PDF.';}
