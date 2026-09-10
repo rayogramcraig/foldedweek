@@ -744,24 +744,53 @@
 
 
 
-    /* Upload privacy reassurance */
+    /* Persistent site footer — visible on Upload, Arrange, and Print */
+    .app{
+      width:100%;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
     [data-screen="1"]{
       position:relative;
-      min-height:760px;
+      min-height:0;
+    }
+    .site-footer{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:28px;
+      width:100%;
+      margin-top:auto;
+      padding-top:64px;
     }
     .upload-privacy-note{
-      position:absolute;
-      left:0;
-      bottom:0;
       margin:0;
-      color:#b8d4df;
+      color:#d7d7d7;
       font-size:14px;
       line-height:1.4;
       font-weight:400;
     }
+    .feedback-link{
+      color:inherit;
+      font-size:14px;
+      line-height:1.4;
+      font-weight:400;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+    .feedback-link .feedback-blue{color:var(--mock-blue);}
+    .feedback-link .feedback-love{color:var(--mock-blue);}
+    .feedback-link .feedback-yellow{color:var(--mock-yellow);}
+    .feedback-link:hover .feedback-yellow,
+    .feedback-link:focus-visible .feedback-yellow{text-decoration:underline;text-underline-offset:3px;}
+    .feedback-link:focus-visible{outline:2px solid var(--mock-yellow);outline-offset:5px;}
     @media(max-width:700px){
-      [data-screen="1"]{min-height:620px;}
-      .upload-privacy-note{position:static;margin-top:44px;}
+      .site-footer{
+        display:block;
+        padding-top:44px;
+      }
+      .feedback-link{display:inline-block;margin-top:16px;}
     }
 
 
@@ -1170,6 +1199,206 @@
 
 
 
+
+
+    /* Feedback modal + Supabase submission */
+    body.feedback-modal-open{overflow:hidden;}
+    .feedback-modal-backdrop{
+      position:fixed;
+      inset:0;
+      z-index:320;
+      display:grid;
+      place-items:center;
+      padding:28px;
+      background:rgba(0,0,0,.72);
+      backdrop-filter:blur(3px);
+    }
+    .feedback-modal-backdrop[hidden]{display:none;}
+    .feedback-dialog{
+      position:relative;
+      width:min(570px,calc(100vw - 44px));
+      padding:38px 40px 34px;
+      color:#eee;
+      background:#303030;
+      border:1px solid #666;
+      border-radius:22px;
+      box-shadow:-26px 22px 0 rgba(8,168,232,.48);
+    }
+    .feedback-close{
+      position:absolute;
+      top:14px;
+      right:18px;
+      width:38px;
+      height:38px;
+      padding:0;
+      border:0;
+      background:transparent;
+      color:var(--mock-blue);
+      font-size:32px;
+      font-weight:200;
+      line-height:1;
+    }
+    .feedback-close:focus-visible{
+      outline:2px solid var(--mock-yellow);
+      outline-offset:2px;
+    }
+    .feedback-title{
+      margin:0 42px 12px 0;
+      font-size:31px;
+      line-height:1.06;
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+    .feedback-title .feedback-blue{color:var(--mock-blue);}
+    .feedback-title .feedback-love{color:var(--mock-blue);}
+    .feedback-title .feedback-yellow{color:var(--mock-yellow);}
+    .feedback-intro{
+      margin:0 0 27px;
+      color:#d7d7d7;
+      font-size:15px;
+      line-height:1.45;
+    }
+    .feedback-fieldset{
+      margin:0 0 22px;
+      padding:0;
+      border:0;
+    }
+    .feedback-fieldset legend,
+    .feedback-field-label{
+      display:block;
+      margin:0 0 9px;
+      color:var(--mock-blue);
+      font-size:14px;
+      line-height:1.2;
+      font-weight:700;
+    }
+    .feedback-optional{
+      color:#a6a6a6;
+      font-weight:400;
+    }
+    .feedback-types{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:9px;
+    }
+    .feedback-type{
+      position:relative;
+      display:block;
+      margin:0;
+      cursor:pointer;
+    }
+    .feedback-type input{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+    }
+    .feedback-type span{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:46px;
+      padding:8px 12px;
+      border:1px solid #707070;
+      border-radius:24px;
+      color:#d9d9d9;
+      background:transparent;
+      font-size:15px;
+      font-weight:400;
+      transition:border-color .15s ease,background .15s ease,color .15s ease;
+    }
+    .feedback-type input:checked + span{
+      color:#252525;
+      background:var(--mock-yellow);
+      border-color:var(--mock-yellow);
+      font-weight:700;
+    }
+    .feedback-type input:focus-visible + span{
+      outline:2px solid var(--mock-blue);
+      outline-offset:3px;
+    }
+    .feedback-form-row{margin:0 0 20px;}
+    .feedback-dialog textarea,
+    .feedback-dialog input[type="email"]{
+      display:block;
+      width:100%;
+      margin:0;
+      padding:14px 16px;
+      color:#f2f2f2;
+      background:#242424;
+      border:1px solid #676767;
+      border-radius:13px;
+      outline:none;
+      font:inherit;
+      font-size:15px;
+      line-height:1.4;
+    }
+    .feedback-dialog textarea{
+      min-height:150px;
+      resize:vertical;
+    }
+    .feedback-dialog textarea::placeholder,
+    .feedback-dialog input[type="email"]::placeholder{color:#8f8f8f;}
+    .feedback-dialog textarea:focus,
+    .feedback-dialog input[type="email"]:focus{
+      border-color:var(--mock-blue);
+      box-shadow:0 0 0 1px var(--mock-blue);
+    }
+    .feedback-honeypot{
+      position:absolute!important;
+      left:-10000px!important;
+      width:1px!important;
+      height:1px!important;
+      overflow:hidden!important;
+    }
+    .feedback-fineprint{
+      margin:0 0 22px;
+      color:#9d9d9d;
+      font-size:12px;
+      line-height:1.45;
+    }
+    .feedback-actions{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .feedback-cancel{
+      padding:8px 0;
+      border:0;
+      background:transparent;
+      color:#bbb;
+      font-size:14px;
+    }
+    .feedback-cancel:hover{text-decoration:underline;text-underline-offset:3px;}
+    .feedback-submit{
+      min-width:148px;
+      padding:12px 18px;
+      border:0;
+      border-radius:0;
+      background:var(--mock-blue);
+      color:#fff;
+      font-size:16px;
+      font-weight:700;
+    }
+    .feedback-submit:hover{filter:brightness(1.08);}
+    .feedback-submit:disabled{opacity:.5;cursor:wait;}
+    .feedback-status{
+      min-height:20px;
+      margin:16px 0 0;
+      color:#d6d6d6;
+      font-size:13px;
+      line-height:1.4;
+    }
+    .feedback-status.error{color:#ff9a8b;}
+    .feedback-status.success{color:var(--mock-yellow);font-weight:700;}
+    @media(max-width:600px){
+      .feedback-modal-backdrop{padding:18px;}
+      .feedback-dialog{width:100%;padding:32px 22px 26px;box-shadow:-14px 14px 0 rgba(8,168,232,.48);}
+      .feedback-title{font-size:27px;}
+      .feedback-types{grid-template-columns:1fr;}
+      .feedback-type span{min-height:42px;}
+    }
+
   </style>
 </head>
 
@@ -1215,7 +1444,6 @@
     </label>
     <div id="progressShell" class="progress-shell"><div id="progressBar" class="progress-bar"></div></div>
     <div id="uploadMessage" class="status"></div>
-    <p class="upload-privacy-note">by <a href="http://rayogram.com" style="color:orange;">rayogram</a>. This site does not save, upload, or use your images. Everything stays on your device.</p>
   </section>
 
 
@@ -1269,9 +1497,55 @@
       </aside>
     </div>
   </section>
+
+  <footer class="site-footer" aria-label="Site information">
+    <p class="upload-privacy-note">by <a href="http://rayogram.com" style="color:orange;">rayogram</a>. This site does not save, upload, or use your images. Everything stays on your device.</p>
+    <a class="feedback-link" href="#feedback" aria-label="Give feedback"><span class="feedback-blue">We’d</span> <span class="feedback-love">love</span> <span class="feedback-yellow">your feedback.</span></a>
+  </footer>
 </div>
 
 
+
+
+
+
+<div id="feedbackModal" class="feedback-modal-backdrop" hidden>
+  <div class="feedback-dialog" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle" aria-describedby="feedbackIntro">
+    <button id="feedbackClose" class="feedback-close" type="button" aria-label="Close feedback form">×</button>
+    <h2 id="feedbackModalTitle" class="feedback-title"><span class="feedback-blue">We’d</span> <span class="feedback-love">love</span> <span class="feedback-yellow">your feedback.</span></h2>
+    <p id="feedbackIntro" class="feedback-intro">Found something odd, have an idea, or just want to tell us what you think?</p>
+
+    <form id="feedbackForm" novalidate>
+      <fieldset class="feedback-fieldset">
+        <legend>What kind of feedback?</legend>
+        <div class="feedback-types">
+          <label class="feedback-type"><input type="radio" name="type" value="bug"><span>Bug</span></label>
+          <label class="feedback-type"><input type="radio" name="type" value="suggestion" checked><span>Suggestion</span></label>
+          <label class="feedback-type"><input type="radio" name="type" value="other"><span>Other</span></label>
+        </div>
+      </fieldset>
+
+      <div class="feedback-form-row">
+        <label class="feedback-field-label" for="feedbackMessage">Your feedback</label>
+        <textarea id="feedbackMessage" name="message" maxlength="4000" required placeholder="What should we know?"></textarea>
+      </div>
+
+      <div class="feedback-form-row">
+        <label class="feedback-field-label" for="feedbackEmail">Email <span class="feedback-optional">(optional — only if you want a reply)</span></label>
+        <input id="feedbackEmail" name="email" type="email" maxlength="320" autocomplete="email" placeholder="you@example.com">
+      </div>
+
+      <label class="feedback-honeypot" aria-hidden="true">Leave this blank<input id="feedbackWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></label>
+      <p class="feedback-fineprint">Submitting sends this message plus the current page and basic browser/device information. Your photos are never included.</p>
+
+      <div class="feedback-actions">
+        <button id="feedbackCancel" class="feedback-cancel" type="button">Cancel</button>
+        <button id="feedbackSubmit" class="feedback-submit" type="submit">Send feedback</button>
+      </div>
+      <p id="feedbackStatus" class="feedback-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</div>
 
 
 <div id="photoModal" class="modal-backdrop" hidden>
@@ -2234,6 +2508,159 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 
+
+
+
+<script>
+/*
+  Folded Week feedback configuration
+  ----------------------------------
+  1) Create the Supabase table/policy using foldedweek-feedback-setup.sql.
+  2) From Supabase's Connect dialog, paste your Project URL and PUBLISHABLE key below.
+  3) Never put a secret/service-role key in this file.
+*/
+const FOLDED_WEEK_FEEDBACK = {
+  supabaseUrl: 'https://inftuytlqkkzdkfibdvr.supabase.co',
+  supabasePublishableKey: 'sb_publishable_Mts-SQyITzyyrYiGQ1ZCDA_fMwb5TgQ'
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const link = document.querySelector('.feedback-link');
+  const modal = document.getElementById('feedbackModal');
+  const form = document.getElementById('feedbackForm');
+  const closeButton = document.getElementById('feedbackClose');
+  const cancelButton = document.getElementById('feedbackCancel');
+  const submitButton = document.getElementById('feedbackSubmit');
+  const message = document.getElementById('feedbackMessage');
+  const email = document.getElementById('feedbackEmail');
+  const honeypot = document.getElementById('feedbackWebsite');
+  const status = document.getElementById('feedbackStatus');
+  if (!link || !modal || !form) return;
+
+  let returnFocus = null;
+  let openedAt = 0;
+
+  const configured = () => {
+    const url = (FOLDED_WEEK_FEEDBACK.supabaseUrl || '').trim();
+    const key = (FOLDED_WEEK_FEEDBACK.supabasePublishableKey || '').trim();
+    return /^https:\/\/.+\.supabase\.co\/?$/i.test(url) && /^sb_publishable_/i.test(key);
+  };
+
+  const setStatus = (text, kind = '') => {
+    status.textContent = text;
+    status.className = 'feedback-status' + (kind ? ' ' + kind : '');
+  };
+
+  const openFeedback = () => {
+    returnFocus = document.activeElement;
+    openedAt = Date.now();
+    setStatus('');
+    modal.hidden = false;
+    document.body.classList.add('feedback-modal-open');
+    window.requestAnimationFrame(() => message.focus());
+  };
+
+  const closeFeedback = () => {
+    modal.hidden = true;
+    document.body.classList.remove('feedback-modal-open');
+    setStatus('');
+    if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
+  };
+
+  link.addEventListener('click', (event) => {
+    event.preventDefault();
+    openFeedback();
+  });
+  closeButton.addEventListener('click', closeFeedback);
+  cancelButton.addEventListener('click', closeFeedback);
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) closeFeedback();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !modal.hidden) closeFeedback();
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    setStatus('');
+
+    const feedbackText = message.value.trim();
+    const feedbackEmail = email.value.trim();
+    const type = new FormData(form).get('type') || 'other';
+
+    if (honeypot.value) {
+      form.reset();
+      setStatus('Thanks — feedback received.', 'success');
+      return;
+    }
+    if (feedbackText.length < 2) {
+      setStatus('Please add a little feedback before sending.', 'error');
+      message.focus();
+      return;
+    }
+    if (feedbackEmail && !email.checkValidity()) {
+      setStatus('That email address doesn’t look quite right.', 'error');
+      email.focus();
+      return;
+    }
+    if (!configured()) {
+      setStatus('Feedback storage isn’t connected yet. Add the Supabase Project URL and publishable key in the configuration block near the bottom of this file.', 'error');
+      return;
+    }
+
+    // Simple client-side bot speed bump. RLS still provides the actual database security boundary.
+    if (Date.now() - openedAt < 900) {
+      setStatus('Please give it a second, then send again.', 'error');
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending…';
+
+    const payload = {
+      type,
+      message: feedbackText,
+      email: feedbackEmail || null,
+      page_url: window.location.href.slice(0, 2048),
+      user_agent: (navigator.userAgent || '').slice(0, 1024),
+      viewport: `${window.innerWidth}x${window.innerHeight}`
+    };
+
+    try {
+      const baseUrl = FOLDED_WEEK_FEEDBACK.supabaseUrl.replace(/\/$/, '');
+      const response = await fetch(`${baseUrl}/rest/v1/feedback`, {
+        method: 'POST',
+        headers: {
+          'apikey': FOLDED_WEEK_FEEDBACK.supabasePublishableKey,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const detail = await response.text();
+        throw new Error(`Supabase ${response.status}: ${detail}`);
+      }
+
+      form.reset();
+      form.querySelector('input[name="type"][value="suggestion"]').checked = true;
+      setStatus('Thanks — feedback received.', 'success');
+      submitButton.textContent = 'Sent';
+      window.setTimeout(() => {
+        closeFeedback();
+        submitButton.disabled = false;
+        submitButton.textContent = 'Send feedback';
+      }, 1100);
+    } catch (error) {
+      console.error('Feedback submission failed:', error);
+      setStatus('Couldn’t send that right now. Please try again.', 'error');
+      submitButton.disabled = false;
+      submitButton.textContent = 'Send feedback';
+    }
+  });
+});
+</script>
 
 
 </body>
