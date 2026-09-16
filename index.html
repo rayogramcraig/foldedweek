@@ -390,7 +390,7 @@
     }
     .upload-zone:hover,.upload-zone.drag{background:transparent;border-color:var(--mock-blue);}
     .upload-zone strong{font-size:0;margin:0;color:var(--mock-blue);}
-    .upload-zone strong::after{content:"Drop up to 12 images here";font-size:31px;font-weight:700;}
+    .upload-zone strong::after{content:"Drop at least 9 images here";font-size:31px;font-weight:700;}
     .upload-zone .muted{display:none;}
 
 
@@ -739,6 +739,13 @@
     
     [data-screen="1"] #uploadMessage{
       display:none;
+    }
+    [data-screen="1"] #uploadMessage.upload-error{
+      display:block;
+      margin-top:18px;
+      color:var(--mock-yellow);
+      text-align:center;
+      font-weight:700;
     }
 
 
@@ -1439,7 +1446,7 @@
   <section class="screen panel" data-screen="1">
     <label id="dropZone" class="upload-zone">
       <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple />
-      <strong id="uploadInstruction" data-count="12">+ Add up to 12 images</strong>
+      <strong id="uploadInstruction" data-count="9">+ Add at least 9 images</strong>
       <span class="muted">Drop images here or click to choose them.</span>
     </label>
     <div id="progressShell" class="progress-shell"><div id="progressBar" class="progress-bar"></div></div>
@@ -1580,6 +1587,7 @@
 <script>
 (() => {
   const PAGE_W = 1000;
+  const MIN_IMAGES = 9;
   const MAX_IMAGES = 12;
   const PAPER_SIZES = {
     letter:  { label:'Letter', pdfFormat:'letter', sheetWidth:279.4, sheetHeight:215.9 },
@@ -1612,7 +1620,29 @@
 
 
 
+  function showMinimumImagesMessage(){
+    const message=$('#uploadMessage');
+    if(message){
+      message.textContent=`Please choose at least ${MIN_IMAGES} images.`;
+      message.classList.add('upload-error');
+    }
+    const instruction=$('#uploadInstruction');
+    if(instruction) instruction.dataset.count=String(MIN_IMAGES);
+  }
+
+  function clearMinimumImagesMessage(){
+    const message=$('#uploadMessage');
+    if(message){
+      message.textContent='';
+      message.classList.remove('upload-error');
+    }
+  }
+
   function showStep(n){
+    if(n>1 && state.photos.length<MIN_IMAGES){
+      showMinimumImagesMessage();
+      n=1;
+    }
     state.step=n;
     $$('.screen').forEach(el => el.hidden = Number(el.dataset.screen)!==n);
     $$('.step-pill').forEach(el => el.classList.toggle('active', Number(el.dataset.stepPill)===n));
@@ -1641,6 +1671,21 @@
     if(s.getFullYear()===e.getFullYear() && s.getMonth()===e.getMonth()) return `${s.toLocaleDateString('en-US',{month:'long',day:'numeric'})} - ${e.getDate()}, ${e.getFullYear()}`;
     if(s.getFullYear()===e.getFullYear()) return `${s.toLocaleDateString('en-US',{month:'long',day:'numeric'})} - ${e.toLocaleDateString('en-US',{month:'long',day:'numeric'})}, ${e.getFullYear()}`;
     return `${fmt(s)} - ${fmt(e)}`;
+  }
+
+
+
+  function drawCoverDateRange(ctx,text,x,y,maxWidth,lineHeight=80){
+    if(ctx.measureText(text).width<=maxWidth || !text.includes(' - ')){
+      ctx.fillText(text,x,y);
+      return 1;
+    }
+    const splitAt=text.indexOf(' - ');
+    const firstLine=text.slice(0,splitAt)+' -';
+    const secondLine=text.slice(splitAt+3);
+    ctx.fillText(firstLine,x,y);
+    ctx.fillText(secondLine,x,y+lineHeight);
+    return 2;
   }
 
 
@@ -1771,6 +1816,12 @@
   async function addFiles(files){
     const selected=[...files].filter(f=>f.type.startsWith('image/')).slice(0,MAX_IMAGES);
     if(!selected.length) return;
+    if(selected.length<MIN_IMAGES){
+      showMinimumImagesMessage();
+      $('#fileInput').value='';
+      return;
+    }
+    clearMinimumImagesMessage();
     state.photos.forEach(p=>URL.revokeObjectURL(p.url));
     state.photos=[]; state.selectedId=null;
     const uploadZone=$('#dropZone');
@@ -1795,7 +1846,7 @@
     setTimeout(()=>{
       uploadZone.classList.remove('uploading','upload-complete');
       uploadZone.style.setProperty('--upload-progress','0%');
-      instruction.dataset.count=String(MAX_IMAGES);
+      instruction.dataset.count=String(MIN_IMAGES);
       showStep(2);
     },300);
   }
@@ -2005,9 +2056,11 @@
       const p=pageObj.photo; drawImageLayout(ctx,p,false);
       ctx.fillStyle='white'; ctx.textBaseline='top';
       ctx.font='bold 72px "Franklin Gothic Medium", "Helvetica", Arial, sans-serif';
-      ctx.fillText(formatRange($('#startDate').value,$('#endDate').value)||'Date range',55,62);
+      const dateText=formatRange($('#startDate').value,$('#endDate').value)||'Date range';
+      const dateLines=drawCoverDateRange(ctx,dateText,55,62,PAGE_W-110,80);
       ctx.font='bold 68px "Times New Roman", Times, serif';
-      wrapText(ctx,$('#title').value||'Untitled',55,165,PAGE_W-110,78);
+      const titleY=165+(dateLines-1)*80;
+      wrapText(ctx,$('#title').value||'Untitled',55,titleY,PAGE_W-110,78);
       drawCaption(ctx,captionText(p));
     } else if(pageObj.type==='photo'){
       const p=pageObj.photo; drawImageLayout(ctx,p,pageObj.part!=='single',pageObj.part==='single'?null:pageObj.part);
@@ -2267,7 +2320,7 @@
 
 
   async function publish(){
-    if(!state.photos.length) return;
+    if(state.photos.length<MIN_IMAGES){ showStep(1); return; }
     const btn=$('#publishBtn');btn.disabled=true;$('#publishStatus').textContent='Building your one-sheet diary…';
     try{
       state.includeDate=$('#includeDate').checked; state.includeLocation=$('#includeLocation').checked;
@@ -2420,9 +2473,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   const uploadStrong = document.querySelector('.upload-zone strong');
   if (uploadStrong) {
-    const initialCount = uploadStrong.getAttribute('data-count') || '12';
+    const initialCount = uploadStrong.getAttribute('data-count') || '9';
     uploadStrong.innerHTML =
-      '<span class="rest">Drop up to </span>' +
+      '<span class="rest">Drop at least </span>' +
       '<span class="count">' + initialCount + '</span>' +
       '<span class="rest"> images here</span>';
 
